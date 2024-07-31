@@ -1,35 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+import React from 'react';
+import { ThemeProvider, CssBaseline, Container, Typography, Box, Paper } from '@mui/material';
+import AddItemForm from './components/AddItemForm';
+import PantryList from './components/PantryList';
+import theme from './theme';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Paper style={{ minHeight: '100vh', padding: '2rem', backgroundColor: theme.palette.background.default }}>
+        <Container maxWidth="md">
+          <Box sx={{ my: 4 }}>
+            <Typography variant="h1" align="center" gutterBottom>
+              Pantry Tracker
+            </Typography>
+            <AddItemForm />
+            <PantryList />
+          </Box>
+        </Container>
+      </Paper>
+    </ThemeProvider>
+  );
 }
 
-export default App
+export default App;
