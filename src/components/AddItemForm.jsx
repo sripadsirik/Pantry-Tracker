@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { Button, TextField, Box, Typography } from '@mui/material';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
+import CaptureImage from './CaptureImage';
 
 function AddItemForm() {
   const [itemName, setItemName] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -20,9 +22,11 @@ function AddItemForm() {
         await addDoc(collection(db, 'pantryItems'), {
           name: itemName,
           quantity: parseInt(quantity),
+          imageUrl,
         });
         setItemName('');
         setQuantity('');
+        setImageUrl('');
         setError('');
       } catch (e) {
         console.error('Error adding document: ', e);
@@ -50,6 +54,7 @@ function AddItemForm() {
         variant="outlined"
       />
       {error && <Typography color="error">{error}</Typography>}
+      <CaptureImage onCapture={(url) => setImageUrl(url)} />
       <Button type="submit" variant="contained" color="primary">
         Add Item
       </Button>

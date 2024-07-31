@@ -1,8 +1,9 @@
 // src/components/PantryList.jsx
 import React, { useEffect, useState } from 'react';
-import { db } from '../firebase';
-import { collection, onSnapshot, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { List, ListItem, ListItemText, IconButton, TextField, Box, Typography, Card, CardContent, CardActions } from '@mui/material';
+import { db, storage } from '../firebase';
+import { collection, onSnapshot, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { ref, deleteObject } from 'firebase/storage';
+import { List, ListItem, ListItemText, IconButton, TextField, Box, Typography, Card, CardContent, CardActions, CardMedia } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -29,8 +30,29 @@ function PantryList() {
   }, []);
 
   const handleDelete = async (id) => {
-    await deleteDoc(doc(db, 'pantryItems', id));
-    setItems(items.filter((item) => item.id !== id));
+    const itemDoc = doc(db, 'pantryItems', id);
+    const itemSnapshot = await getDoc(itemDoc);
+
+    if (itemSnapshot.exists()) {
+      const itemData = itemSnapshot.data();
+      if (itemData.imageUrl) {
+        const imageRef = ref(storage, itemData.imageUrl);
+        await deleteObject(imageRef)
+          .then(() => {
+            console.log("Image deleted successfully");
+          })
+          .catch((error) => {
+            console.error("Error deleting image: ", error);
+          });
+      }
+      await deleteDoc(itemDoc)
+        .then(() => {
+          setItems(items.filter((item) => item.id !== id));
+        })
+        .catch((error) => {
+          console.error("Error deleting document: ", error);
+        });
+    }
   };
 
   const handleEdit = (item) => {
@@ -91,6 +113,14 @@ function PantryList() {
                   </Box>
                 ) : (
                   <>
+                    {item.imageUrl && (
+                      <CardMedia
+                        component="img"
+                        sx={{ width: 100, height: 100, objectFit: 'cover', mr: 2 }}
+                        image={item.imageUrl}
+                        alt={item.name}
+                      />
+                    )}
                     <ListItemText primary={item.name} secondary={`Quantity: ${item.quantity}`} />
                     <Box>
                       <IconButton onClick={() => handleEdit(item)}>
