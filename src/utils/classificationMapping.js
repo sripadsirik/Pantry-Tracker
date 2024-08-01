@@ -1,6 +1,6 @@
 const classificationMapping = (className) => {
     const fruitKeywords = ['apple', 'banana', 'orange', 'berry', 'fruit', 'mango', 'pear', 'peach', 'plum', 'grape', 'cherry'];
-    const vegetableKeywords = ['carrot', 'lettuce', 'broccoli', 'vegetable', 'tomato', 'cucumber', 'pepper', 'spinach', 'potato', 'onion', 'cauliflower'];
+    const vegetableKeywords = ['garlic', 'carrot', 'lettuce', 'broccoli', 'vegetable', 'tomato', 'cucumber', 'pepper', 'spinach', 'potato', 'onion', 'cauliflower'];
     const grainKeywords = ['rice', 'wheat', 'bread', 'grain', 'corn', 'oats', 'barley'];
   
     const classNameLower = className.toLowerCase();
