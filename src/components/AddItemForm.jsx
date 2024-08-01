@@ -1,6 +1,6 @@
 // src/components/AddItemForm.jsx
 import React, { useState } from 'react';
-import { Button, TextField, Box, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Button, TextField, Box, Typography } from '@mui/material';
 import { db } from '../firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import CaptureImage from './CaptureImage';
@@ -18,7 +18,7 @@ function AddItemForm() {
       setError('Quantity cannot be negative');
       return;
     }
-    if (itemName && quantity && classification) {
+    if (itemName && quantity) {
       try {
         await addDoc(collection(db, 'pantryItems'), {
           name: itemName,
@@ -59,21 +59,16 @@ function AddItemForm() {
         fullWidth
         variant="outlined"
       />
-      <FormControl required fullWidth variant="outlined">
-        <InputLabel>Category</InputLabel>
-        <Select
-          value={classification}
-          onChange={(e) => setClassification(e.target.value)}
-          label="Category"
-        >
-          <MenuItem value="fruit">Fruit</MenuItem>
-          <MenuItem value="vegetable">Vegetable</MenuItem>
-          <MenuItem value="grain">Grain</MenuItem>
-          <MenuItem value="other">Other</MenuItem>
-        </Select>
-      </FormControl>
       {error && <Typography color="error">{error}</Typography>}
-      <CaptureImage onCapture={(url) => setImageUrl(url)} />
+      <CaptureImage onCapture={(url, classification) => {
+        setImageUrl(url);
+        setClassification(classification);
+      }} />
+      {classification && (
+        <Typography variant="body2" color="textSecondary">
+          Classification: {classification}
+        </Typography>
+      )}
       <Button type="submit" variant="contained" color="primary">
         Add Item
       </Button>
