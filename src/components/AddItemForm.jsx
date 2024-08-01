@@ -73,7 +73,7 @@ function AddItemForm() {
         </Select>
       </FormControl>
       {error && <Typography color="error">{error}</Typography>}
-      <CaptureImage onCapture={(url, classification) => { setImageUrl(url); setClassification(classification); }} />
+      <CaptureImage onCapture={(url) => setImageUrl(url)} />
       <Button type="submit" variant="contained" color="primary">
         Add Item
       </Button>

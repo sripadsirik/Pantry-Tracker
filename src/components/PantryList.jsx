@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { db, storage } from '../firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import { List, ListItem, ListItemText, IconButton, TextField, Box, Typography, Card, CardContent, CardActions, CardMedia } from '@mui/material';
+import { List, ListItem, ListItemText, IconButton, Box, Typography, Card, CardContent, Button, CardMedia, TextField } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import SearchBar from './SearchBar';
+import AddItemForm from './AddItemForm';
+import { searchRecipe } from '../utils/searchRecipe';
 
 function PantryList() {
   const [items, setItems] = useState([]);
@@ -16,6 +18,7 @@ function PantryList() {
   const [editName, setEditName] = useState('');
   const [editQuantity, setEditQuantity] = useState('');
   const [error, setError] = useState('');
+  const [recipe, setRecipe] = useState('');
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'pantryItems'), (snapshot) => {
@@ -75,6 +78,12 @@ function PantryList() {
     setEditName('');
     setEditQuantity('');
     setError('');
+  };
+
+  const handleSearchRecipe = async () => {
+    const pantryItems = items.map(item => item.name);
+    const recipeText = await searchRecipe(pantryItems);
+    setRecipe(recipeText);
   };
 
   const filteredItems = items.filter((item) =>
@@ -142,6 +151,16 @@ function PantryList() {
           </Card>
         ))}
       </List>
+      <Button onClick={handleSearchRecipe} variant="contained" color="primary" sx={{ mt: 4 }}>
+        Search Recipes
+      </Button>
+      {recipe && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6">Suggested Recipes:</Typography>
+          <Typography>{recipe}</Typography>
+        </Box>
+      )}
+      {/* <AddItemForm /> */}
     </div>
   );
 }
