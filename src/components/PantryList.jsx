@@ -122,6 +122,11 @@ function PantryList() {
                       />
                     )}
                     <ListItemText primary={item.name} secondary={`Quantity: ${item.quantity}`} />
+                    {item.classification && (
+                      <Typography variant="body2" color="textSecondary">
+                        Classification: {item.classification}
+                      </Typography>
+                    )}
                     <Box>
                       <IconButton onClick={() => handleEdit(item)}>
                         <EditIcon />
