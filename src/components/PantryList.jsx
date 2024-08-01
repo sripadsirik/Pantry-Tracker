@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { db, storage } from '../firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import { List, ListItem, ListItemText, IconButton, Box, Typography, Card, CardContent, Button, CardMedia, TextField } from '@mui/material';
+import { List, ListItem, ListItemText, IconButton, Box, Typography, Card, CardContent, Button, CardMedia, TextField, Grid, Paper } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -18,7 +18,7 @@ function PantryList() {
   const [editName, setEditName] = useState('');
   const [editQuantity, setEditQuantity] = useState('');
   const [error, setError] = useState('');
-  const [recipe, setRecipe] = useState('');
+  const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'pantryItems'), (snapshot) => {
@@ -82,8 +82,8 @@ function PantryList() {
 
   const handleSearchRecipe = async () => {
     const pantryItems = items.map(item => item.name);
-    const recipeText = await searchRecipe(pantryItems);
-    setRecipe(recipeText);
+    const recipeResults = await searchRecipe(pantryItems);
+    setRecipes(recipeResults);
   };
 
   const filteredItems = items.filter((item) =>
@@ -154,12 +154,35 @@ function PantryList() {
       <Button onClick={handleSearchRecipe} variant="contained" color="primary" sx={{ mt: 4 }}>
         Search Recipes
       </Button>
-      {recipe && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h6">Suggested Recipes:</Typography>
-          <Typography>{recipe}</Typography>
-        </Box>
-      )}
+      <Grid container spacing={2} sx={{ mt: 4 }}>
+        {recipes.map((recipe, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card sx={{ boxShadow: 3 }}>
+              <CardMedia
+                component="img"
+                sx={{ height: 140 }}
+                image={recipe.image}
+                alt={recipe.label}
+              />
+              <CardContent>
+                <Typography variant="h6">{recipe.label}</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {recipe.ingredients.join(', ')}
+                </Typography>
+                <Button
+                  size="small"
+                  color="primary"
+                  href={recipe.url}
+                  target="_blank"
+                  sx={{ mt: 2 }}
+                >
+                  View Recipe
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
       {/* <AddItemForm /> */}
     </div>
   );
