@@ -20,10 +20,11 @@ function CaptureImage({ onCapture }) {
         const storageRef = ref(storage, `images/${Date.now()}.jpg`);
         await uploadString(storageRef, imageData, 'data_url');
         const url = await getDownloadURL(storageRef);
-        onCapture(url);
+        onCapture(url, "other");  // Default classification to "other"
         setImageData(null);
       } catch (error) {
         console.error("Error uploading image: ", error);
+        onCapture(null, "other");
       }
     }
   };
