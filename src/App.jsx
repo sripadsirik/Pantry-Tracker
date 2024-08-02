@@ -4,6 +4,7 @@ import { ThemeProvider, CssBaseline, Container, Typography, Box, Paper } from '@
 import AddItemForm from './components/AddItemForm';
 import PantryList from './components/PantryList';
 import theme from './theme';
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
