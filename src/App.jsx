@@ -21,7 +21,9 @@ function App() {
           </Box>
         </Container>
       </Paper>
+      <Analytics />
     </ThemeProvider>
+    
   );
 }
 
